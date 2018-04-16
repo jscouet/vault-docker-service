@@ -1,0 +1,28 @@
+version: '2.3'
+
+services:
+  vault:
+    image: vault
+    restart: unless-stopped
+    container_name: vault
+    volumes:
+      - vault-data:/vault
+      - ./config:/vault/config
+    command: server
+    ports:
+      - "8200:8200"
+    networks:
+      - service
+    cap_add:
+      - IPC_LOCK
+
+volumes:
+  vault-data:
+    driver: nfs
+    driver_opts:
+      share: 172.17.0.1/srv/data/volumes/vault-data
+
+networks:
+  service:
+    external:
+      name: service
